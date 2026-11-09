@@ -1,0 +1,67 @@
+erDiagram
+    AREAS ||--o{ VENDORS : "located in"
+    AREAS ||--o{ CUSTOMERS : "lives in"
+    AREAS ||--o{ ORDERS : "delivered to"
+    CATEGORIES ||--o{ CATEGORIES : "parent of"
+    CATEGORIES ||--o{ PRODUCTS : classifies
+    VENDORS ||--o{ PRODUCTS : sells
+    CUSTOMERS ||--o{ ORDERS : places
+    CUSTOMERS ||--o{ REVIEWS : writes
+    ORDERS ||--|{ ORDER_ITEMS : contains
+    PRODUCTS ||--o{ ORDER_ITEMS : "appears in"
+    PRODUCTS ||--o{ REVIEWS : "reviewed in"
+    PRODUCTS ||--o{ INVENTORY_LOG : "stock changes"
+    ORDERS ||--o{ PAYMENTS : "paid by"
+    ORDERS ||--o| DELIVERIES : "fulfilled by"
+
+    AREAS { int area_id PK
+            string area_name UK
+            string district }
+    CATEGORIES { int category_id PK
+                 string category_name UK
+                 int parent_category_id FK }
+    VENDORS { int vendor_id PK
+              string business_name
+              string email UK
+              string phone
+              int area_id FK
+              string status }
+    CUSTOMERS { int customer_id PK
+                string full_name
+                string email UK
+                string phone
+                int area_id FK }
+    PRODUCTS { int product_id PK
+               int vendor_id FK
+               int category_id FK
+               string product_name
+               numeric unit_price
+               int stock_qty
+               boolean is_active }
+    ORDERS { int order_id PK
+             int customer_id FK
+             int delivery_area_id FK
+             string status
+             timestamptz ordered_at }
+    ORDER_ITEMS { int order_id PK,FK
+                  int product_id PK,FK
+                  int quantity
+                  numeric unit_price }
+    PAYMENTS { int payment_id PK
+               int order_id FK
+               numeric amount
+               string method
+               string status
+               string reference UK }
+    DELIVERIES { int delivery_id PK
+                 int order_id FK,UK
+                 string rider_name
+                 string status }
+    REVIEWS { int review_id PK
+              int customer_id FK
+              int product_id FK
+              smallint rating }
+    INVENTORY_LOG { bigint log_id PK
+                    int product_id FK
+                    int change_qty
+                    string reason }
