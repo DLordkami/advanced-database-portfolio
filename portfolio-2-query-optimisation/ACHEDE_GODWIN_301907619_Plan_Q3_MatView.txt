@@ -1,0 +1,18 @@
+SET
+psql:/home/claude/advanced-database-portfolio/portfolio-2-query-optimisation/optimise_q3_matview.sql:4: NOTICE:  materialized view "vendor_revenue" does not exist, skipping
+DROP MATERIALIZED VIEW
+SELECT 500
+CREATE INDEX
+ANALYZE
+                                                                  QUERY PLAN                                                                  
+----------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=0.27..1.06 rows=10 width=22) (actual time=0.015..0.019 rows=10 loops=1)
+   Buffers: shared hit=6 read=2
+   ->  Index Scan using idx_vendor_revenue on vendor_revenue  (cost=0.27..39.77 rows=500 width=22) (actual time=0.014..0.017 rows=10 loops=1)
+         Buffers: shared hit=6 read=2
+ Planning:
+   Buffers: shared hit=21 read=1
+ Planning Time: 0.103 ms
+ Execution Time: 0.028 ms
+(8 rows)
+
