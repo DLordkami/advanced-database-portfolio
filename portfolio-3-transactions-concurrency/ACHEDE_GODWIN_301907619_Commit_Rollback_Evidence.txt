@@ -1,0 +1,83 @@
+-- Demo 1: atomic order placement. COMMIT on success, ROLLBACK on failure.
+SET search_path = marketplace;
+SET
+UPDATE products SET stock_qty = 5 WHERE product_id = 1;
+UPDATE 1
+UPDATE products SET stock_qty = 5 WHERE product_id = 2;
+UPDATE 1
+SELECT product_id, stock_qty FROM products WHERE product_id IN (1,2) ORDER BY 1;
+ product_id | stock_qty 
+------------+-----------
+          1 |         5
+          2 |         5
+(2 rows)
+
+\echo '--- (a) Successful order: all steps commit together'
+--- (a) Successful order: all steps commit together
+BEGIN;
+BEGIN
+INSERT INTO orders(customer_id, delivery_area_id, status) VALUES (1, 1, 'paid') RETURNING order_id \gset
+INSERT 0 1
+INSERT INTO order_items(order_id, product_id, quantity, unit_price)
+  SELECT :order_id, product_id, 2, unit_price FROM products WHERE product_id = 1;
+INSERT 0 1
+UPDATE products SET stock_qty = stock_qty - 2 WHERE product_id = 1;
+UPDATE 1
+INSERT INTO inventory_log(product_id, change_qty, reason) VALUES (1, -2, 'order');
+INSERT 0 1
+COMMIT;
+COMMIT
+SELECT product_id, stock_qty FROM products WHERE product_id = 1;
+ product_id | stock_qty 
+------------+-----------
+          1 |         3
+(1 row)
+
+\echo '--- (b) Failed order: product 2 has only 5 in stock, customer wants 8 -> CHECK (stock_qty >= 0) fails'
+--- (b) Failed order: product 2 has only 5 in stock, customer wants 8 -> CHECK (stock_qty >= 0) fails
+SELECT count(*) AS orders_before FROM orders \gset
+BEGIN;
+BEGIN
+INSERT INTO orders(customer_id, delivery_area_id, status) VALUES (1, 1, 'paid') RETURNING order_id \gset
+INSERT 0 1
+INSERT INTO order_items(order_id, product_id, quantity, unit_price)
+  SELECT :order_id, product_id, 8, unit_price FROM products WHERE product_id = 2;
+INSERT 0 1
+UPDATE products SET stock_qty = stock_qty - 8 WHERE product_id = 2;   -- ERROR here
+psql:/home/claude/advanced-database-portfolio/portfolio-3-transactions-concurrency/01_commit_rollback.sql:23: ERROR:  new row for relation "products" violates check constraint "products_stock_qty_check"
+DETAIL:  Failing row contains (2, 289, 8, Product 2, Demo description for product 2, 40862.37, -3, t, 2024-12-01 00:20:11.219176+01).
+ROLLBACK;
+ROLLBACK
+SELECT product_id, stock_qty FROM products WHERE product_id = 2;
+ product_id | stock_qty 
+------------+-----------
+          2 |         5
+(1 row)
+
+SELECT count(*) - :orders_before AS orders_added_by_failed_attempt FROM orders;
+ orders_added_by_failed_attempt 
+--------------------------------
+                              0
+(1 row)
+
+\echo '--- (c) SAVEPOINT: undo only the failing part, keep the rest'
+--- (c) SAVEPOINT: undo only the failing part, keep the rest
+BEGIN;
+BEGIN
+UPDATE products SET stock_qty = stock_qty - 1 WHERE product_id = 1;
+UPDATE 1
+SAVEPOINT before_risky;
+SAVEPOINT
+UPDATE products SET stock_qty = stock_qty - 99 WHERE product_id = 1;  -- ERROR
+psql:/home/claude/advanced-database-portfolio/portfolio-3-transactions-concurrency/01_commit_rollback.sql:32: ERROR:  new row for relation "products" violates check constraint "products_stock_qty_check"
+DETAIL:  Failing row contains (1, 238, 6, Product 1, Demo description for product 1, 64519.12, -97, t, 2024-12-08 16:09:17.757418+01).
+ROLLBACK TO SAVEPOINT before_risky;
+ROLLBACK
+COMMIT;
+COMMIT
+SELECT product_id, stock_qty FROM products WHERE product_id = 1;
+ product_id | stock_qty 
+------------+-----------
+          1 |         2
+(1 row)
+

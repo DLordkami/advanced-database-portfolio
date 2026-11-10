@@ -1,0 +1,55 @@
+=== DEMO 2: LOST UPDATE (READ COMMITTED, read-then-write, no lock) ===
+[A] read stock = 10
+[B] read stock = 10
+[B] wrote stock = read value - 4
+[A] wrote stock = read value - 3
+FINAL stock of product 1 = 7   <-- WRONG: correct answer is 10-3-4 = 3 (A overwrote B)
+
+=== DEMO 3: FIX WITH SELECT ... FOR UPDATE (row lock) ===
+[A] locked row, read stock = 10
+[A] wrote stock = read value - 3
+[B] locked row, read stock = 7
+[B] wrote stock = read value - 4
+FINAL stock of product 1 = 3   <-- CORRECT: 10-3-4 = 3 (B waited for A)
+
+=== DEMO 4: REPEATABLE READ detects the conflict ===
+[A] read stock = 10
+[B] read stock = 10
+psql:04_repeatable_read_A.sql:7: ERROR:  could not serialize access due to concurrent update
+FINAL stock of product 1 = 6   <-- only B committed (10-4); A was rejected and must retry
+
+=== DEMO 5: NON-REPEATABLE READ under read_committed ===
+ first_read 
+------------
+    2500.00
+(1 row)
+
+[Writer] price changed to 1111.00 and committed
+ second_read 
+-------------
+     1111.00
+(1 row)
+
+
+=== DEMO 5: NON-REPEATABLE READ under repeatable_read ===
+ first_read 
+------------
+    2500.00
+(1 row)
+
+[Writer] price changed to 1111.00 and committed
+ second_read 
+-------------
+     2500.00
+(1 row)
+
+
+=== DEMO 6: DEADLOCK (opposite lock order) ===
+[A] locked product 1
+[B] locked product 2
+psql:[A] locked product 2
+06_deadlock_B.sql:7: ERROR:  deadlock detected
+DETAIL:  Process 352 waits for ShareLock on transaction 931; blocked by process 350.
+Process 350 waits for ShareLock on transaction 932; blocked by process 352.
+HINT:  See server log for query details.
+CONTEXT:  while updating tuple (285,68) in relation "products"
