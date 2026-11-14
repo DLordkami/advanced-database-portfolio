@@ -1,0 +1,184 @@
+=== Q1: Phones with >= 8GB RAM and >= 128GB storage under 300,000, cheapest 5 (querying flexible attributes)
+{
+  _id: 2004,
+  name: 'Phones item 2004',
+  price: 67153,
+  attributes: {
+    ram_gb: 8,
+    storage_gb: 128
+  }
+}
+{
+  _id: 2283,
+  name: 'Phones item 2283',
+  price: 77653,
+  attributes: {
+    ram_gb: 12,
+    storage_gb: 128
+  }
+}
+{
+  _id: 1799,
+  name: 'Phones item 1799',
+  price: 80799,
+  attributes: {
+    ram_gb: 12,
+    storage_gb: 128
+  }
+}
+{
+  _id: 1301,
+  name: 'Phones item 1301',
+  price: 89733,
+  attributes: {
+    ram_gb: 8,
+    storage_gb: 128
+  }
+}
+{
+  _id: 2466,
+  name: 'Phones item 2466',
+  price: 91718,
+  attributes: {
+    ram_gb: 8,
+    storage_gb: 256
+  }
+}
+=== Q2: Products tagged "sale" in Groceries that are perishable (array + nested field)
+count = 121
+=== Q3: Top 5 vendors by revenue from DELIVERED orders (aggregation pipeline: $match, $unwind, $group, $sort, $limit)
+{
+  _id: 85,
+  revenue: 24492018,
+  units: 62
+}
+{
+  _id: 99,
+  revenue: 19752124,
+  units: 55
+}
+{
+  _id: 95,
+  revenue: 17964192,
+  units: 53
+}
+{
+  _id: 134,
+  revenue: 16426306,
+  units: 49
+}
+{
+  _id: 62,
+  revenue: 15927449,
+  units: 56
+}
+=== Q4: Sales per delivery area and month, last 3 months with data ($group on date parts)
+{
+  _id: {
+    area: 'Gwarinpa',
+    month: '2026-11'
+  },
+  orders: 9,
+  sales: 14770643
+}
+{
+  _id: {
+    area: 'Kubwa',
+    month: '2026-11'
+  },
+  orders: 8,
+  sales: 13991408
+}
+{
+  _id: {
+    area: 'Lugbe',
+    month: '2026-11'
+  },
+  orders: 12,
+  sales: 11974506
+}
+{
+  _id: {
+    area: 'Garki',
+    month: '2026-11'
+  },
+  orders: 9,
+  sales: 11275683
+}
+{
+  _id: {
+    area: 'Wuse',
+    month: '2026-11'
+  },
+  orders: 9,
+  sales: 8150279
+}
+{
+  _id: {
+    area: 'Nyanya',
+    month: '2026-11'
+  },
+  orders: 7,
+  sales: 7968216
+}
+=== Q5: Average rating of the 5 best-reviewed products with >= 3 reviews ($group on reviews + $lookup to products)
+{
+  _id: 912,
+  n: 3,
+  avg_rating: 5,
+  name: 'Phones item 912'
+}
+{
+  _id: 3465,
+  n: 3,
+  avg_rating: 5,
+  name: 'Fashion item 3465'
+}
+{
+  _id: 436,
+  n: 3,
+  avg_rating: 5,
+  name: 'Phones item 436'
+}
+{
+  _id: 4162,
+  n: 3,
+  avg_rating: 5,
+  name: 'Groceries item 4162'
+}
+{
+  _id: 982,
+  n: 3,
+  avg_rating: 5,
+  name: 'Electronics item 982'
+}
+=== Q6: Atomic stock decrement on ONE document (single-document operations are atomic in MongoDB)
+buy 3 of 5 -> modifiedCount = 1 , stock now 2
+buy 3 of 2 -> modifiedCount = 0 (refused: condition and update happen atomically, no oversell)
+=== Q7: Update one element inside an embedded array (arrayFilters)
+{
+  _id: 1,
+  items: [
+    {
+      product_id: 2803,
+      name: 'Electronics item 2803',
+      vendor_id: 71,
+      qty: 9,
+      unit_price: 196134
+    },
+    {
+      product_id: 1948,
+      name: 'Groceries item 1948',
+      vendor_id: 147,
+      qty: 2,
+      unit_price: 10363
+    },
+    {
+      product_id: 4726,
+      name: 'Phones item 4726',
+      vendor_id: 177,
+      qty: 2,
+      unit_price: 165997
+    }
+  ]
+}

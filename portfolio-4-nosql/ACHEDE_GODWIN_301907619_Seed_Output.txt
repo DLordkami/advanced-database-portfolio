@@ -1,0 +1,56 @@
+--- Collections and document counts
+vendors    200
+products   5000
+orders     3000
+reviews    8000
+--- Sample product (Phones) and sample product (Groceries): different attributes, same collection
+{
+  _id: 3,
+  name: 'Phones item 3',
+  category: 'Phones',
+  price: 390368,
+  stock: 172,
+  is_active: true,
+  vendor: {
+    _id: 75,
+    name: 'Vendor 75',
+    area: 'Gwarinpa'
+  },
+  attributes: {
+    brand: 'Tecno',
+    ram_gb: 12,
+    storage_gb: 128,
+    battery_mah: 4370,
+    color: 'gold'
+  },
+  tags: [
+    'sale',
+    'everyday'
+  ],
+  created_at: ISODate('2026-07-04T15:51:07.422Z')
+}
+{
+  _id: 15,
+  name: 'Groceries item 15',
+  category: 'Groceries',
+  price: 16749,
+  stock: 66,
+  is_active: true,
+  vendor: {
+    _id: 92,
+    name: 'Vendor 92',
+    area: 'Gwarinpa'
+  },
+  attributes: {
+    weight_kg: 2,
+    perishable: false,
+    shelf_life_days: 338
+  },
+  tags: [
+    'imported',
+    'premium'
+  ],
+  created_at: ISODate('2025-11-28T15:51:07.425Z')
+}
+--- Validation test: inserting a product with negative stock must FAIL
+Rejected as expected: 121 - Document failed validation

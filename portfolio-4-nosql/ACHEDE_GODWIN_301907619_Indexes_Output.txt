@@ -1,0 +1,17 @@
+--- BEFORE indexes
+Phones filter + sort by price      stage=COLLSCAN  docsExamined=5000  returned=121  ms=3
+Orders of customer 77, newest first stage=COLLSCAN  docsExamined=3000  returned=4  ms=2
+--- Creating indexes
+category_1_price_1
+category_1_attributes.ram_gb_1
+customer._id_1_ordered_at_-1
+name_text
+--- AFTER indexes
+Phones filter + sort by price      stage=IXSCAN  docsExamined=333  returned=121  ms=3
+Orders of customer 77, newest first stage=IXSCAN  docsExamined=4  returned=4  ms=1
+Text search "Phones item 4242" returns 1 documents
+--- Index list on products
+  _id_
+  category_1_price_1
+  category_1_attributes.ram_gb_1
+  name_text
