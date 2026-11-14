@@ -1,0 +1,9 @@
+PORTFOLIO 5 - HOW TO RUN (from the server, against the Atlas cluster)
+cd ~/portfolio-5-distributed-cloud/portfolio-5-distributed-cloud     (check the folder with: ls)
+read -rs ATLAS_PW; export ATLAS_PW        # skip if still set in this session
+export ATLAS_USER=achedegodwinowi_db_user
+A='mongodb+srv://cluster0.xmgbauv.mongodb.net/'
+mongosh "$A" -u $ATLAS_USER -p "$ATLAS_PW" --quiet --file 01_cluster_topology.js       | tee ACHEDE_GODWIN_301907619_P5_Topology_Output.txt
+mongosh "$A" -u $ATLAS_USER -p "$ATLAS_PW" --quiet --file 02_write_concern_demo.js     | tee ACHEDE_GODWIN_301907619_P5_WriteConcern_Output.txt
+mongosh "$A" -u $ATLAS_USER -p "$ATLAS_PW" --quiet --file 03_read_preference_demo.js   | tee ACHEDE_GODWIN_301907619_P5_ReadPref_Output.txt
+Also take: a screenshot of the Atlas cluster page (Clusters -> Cluster0 showing region AWS Frankfurt) and of the terminal.

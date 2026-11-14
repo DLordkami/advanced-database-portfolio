@@ -1,0 +1,7 @@
+--- Write concern vs latency (each write waits for a different level of acknowledgement)
+w:1  (primary only)                100 inserts in 811 ms  ->  avg 8.1 ms per write
+w:"majority" (2 of 3 nodes)        100 inserts in 1021 ms  ->  avg 10.2 ms per write
+w:"majority", j:true (journaled)   100 inserts in 986 ms  ->  avg 9.9 ms per write
+Total documents written: 300
+--- Trade-off: w:1 is fastest but a primary crash before replication could lose the write;
+    w:"majority" survives a primary failure (a majority already has it) at the cost of latency.

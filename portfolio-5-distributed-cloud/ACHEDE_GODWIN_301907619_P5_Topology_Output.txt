@@ -1,0 +1,16 @@
+Replica set name : atlas-v94fzd-shard-0
+Provider/region  : AWS / EU_CENTRAL_1
+Members ( 3 ):
+    ac-mgrvtno-shard-00-00.xmgbauv.mongodb.net:27017
+    ac-mgrvtno-shard-00-01.xmgbauv.mongodb.net:27017
+    ac-mgrvtno-shard-00-02.xmgbauv.mongodb.net:27017
+Current primary  : ac-mgrvtno-shard-00-02.xmgbauv.mongodb.net:27017
+Connected to     : ac-mgrvtno-shard-00-02.xmgbauv.mongodb.net:27017 (writable primary = true)
+--- Role, availability zone and node type of EACH member (direct connection to every host)
+ac-mgrvtno-shard-00-00     SECONDARY  zone=euc1-az2  type=ELECTABLE
+ac-mgrvtno-shard-00-01     SECONDARY  zone=euc1-az3  type=ELECTABLE
+ac-mgrvtno-shard-00-02     PRIMARY    zone=euc1-az1  type=ELECTABLE
+--- replSetGetStatus (may be restricted on the free tier)
+    ac-mgrvtno-shard-00-00.xmgbauv.mongodb.net:27017 SECONDARY
+    ac-mgrvtno-shard-00-01.xmgbauv.mongodb.net:27017 SECONDARY
+    ac-mgrvtno-shard-00-02.xmgbauv.mongodb.net:27017 PRIMARY

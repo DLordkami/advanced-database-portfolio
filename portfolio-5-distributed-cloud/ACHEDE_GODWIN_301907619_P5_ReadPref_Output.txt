@@ -1,0 +1,7 @@
+--- Which node answers a read?
+readPreference primary   -> ac-mgrvtno-shard-00-02
+readPreference secondary -> ac-mgrvtno-shard-00-00
+--- Read-your-writes test: write with w:1 to the primary, then IMMEDIATELY read from a secondary (200 rounds)
+Stale reads with w:1 + secondary read           : 5 of 200
+Stale reads with w:majority + majority read     : 0 of 200  (majority write + majority read is the strong-consistency setting)
+(A non-zero count in the first line shows eventual consistency; zero means replication lag was below the read delay on this run.)
